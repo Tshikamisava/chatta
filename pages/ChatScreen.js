@@ -1,34 +1,78 @@
-import { View, Text, StyleSheet } from 'react-native'
-import React from 'react'
-import ChatComponents from '../components/ChatComponents'
-import ChatInputComponent from '../components/ChatInputComponent'
+import { View, Text, StyleSheet, Dimensions } from "react-native";
+import React, { useEffect, useState } from "react";
+import ChatComponents from "../components/ChatComponents";
+import ChatInputComponent from "../components/ChatInputComponent";
+import KeyboardComponent from "../components/KeyboardComponent";
+import { FontAwesome, MaterialIcons } from "@expo/vector-icons";
+import MediaPicker from "../components/MediaPicker";
 
 const ChatScreen = () => {
+    const [showEmoGifBoard, setShowEmoGifBoard] = useState(false);
+    const [msg, setMsg] = useState('');
+    const [showMediaPicker, setShowMediaPicker] = useState(false)
+
+    const handleEmoji = (emo) => {
+        console.log(emo.emoji);
+        setMsg(msg => {
+            return msg += emo.emoji
+        })
+    }
+    const sendMessage = () => {
+
+    }
+    const recordAudio = () => {
+
+    }
+    useEffect(() => {
+        console.log(msg)
+    }, [msg])
+    const handleGif = (url) => {
+        console.log(url);
+    }
   return (
     <View style={styles.container}>
-     <ChatComponents />
-     <View style={styles.inputs}>
-     <ChatInputComponent />
-     </View>
-    
+      <View style={styles.content}>
+        <ChatComponents />
+
+        <MediaPicker isVisible={showMediaPicker} />
+
+        <View style={styles.inputs}>
+          <ChatInputComponent
+           message={msg} 
+           setMessage={(text) => setMsg(text)} 
+           showEmoGifBoard={(bln) => setShowEmoGifBoard(bln)}
+            isBoardVisible={showEmoGifBoard}
+            sendMessage={() => sendMessage()}
+            recordAudio={() => recordAudio}
+            showMediaPicker={() => setShowMediaPicker(!showMediaPicker)}
+            />
+        </View>
+      </View>
+      <KeyboardComponent isBoardVisible={showEmoGifBoard}
+       handleEmoji={(emo) => handleEmoji(emo)}
+       handleGif={(url) => handleGif(url)}
+       />
     </View>
-  )
-}
+  );
+};
 const styles = StyleSheet.create({
-    container: {
-        backgroundColor: '#26394D',
-        flex: 1,
-        overflow: 'hidden',
-        paddingBottom: 60,
-    },
-    inputs: {
-        position: 'absolute',
-        bottom: 0,
-        width: '100%',
-        alignItems: 'center',
-        justifyContent: 'center',
-        height: 60,
-      
-    }
-})
-export default ChatScreen
+  container: {
+    backgroundColor: "#26394D",
+    flex: 1,
+    overflow: "hidden",
+  },
+  content: {
+    flex: 1,
+    paddingBottom: 60,
+  },
+  
+  inputs: {
+    position: "absolute",
+    bottom: 0,
+    width: "100%",
+    alignItems: "center",
+    justifyContent: "center",
+    height: 60,
+  },
+});
+export default ChatScreen;
