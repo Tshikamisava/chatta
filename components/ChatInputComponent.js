@@ -1,6 +1,6 @@
 import React, { useRef, useState } from "react";
-import { Keyboard, Modal, StyleSheet, TextInput, View } from "react-native";
-import { MaterialIcons, FontAwesome } from "@expo/vector-icons";
+import { Keyboard, Modal, StyleSheet, Text, TextInput, View } from "react-native";
+import { MaterialIcons, FontAwesome, Ionicons } from "@expo/vector-icons";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import CameraComponent from "./CameraComponent";
 import { Camera } from "expo-camera";
@@ -13,13 +13,19 @@ const ChatInputComponent = ({
   sendMessage,
   recordAudio,
   showMediaPicker,
+  recording,
+  pauseRecording,
+  stopRecording,
+  deleteRecording,
+  isPaused,
+  recordingTime,
 }) => {
   const inputRef = useRef();
   const [isCamVisible, setIsCamVisible] = useState(false);
   const [hours, setHours] = useState();
-  const [minutes, setMinutes] = useState();
-  const [seconds, setSeconds] = useState();
-  //const [isPaused, setIsPaused] = useState();
+  const [minutes, setMinutes] = useState(0);
+  const [seconds, setSeconds] = useState(5);
+ // const [isPaused, setIsPaused] = useState(false);
 
   const checkCameraPermissions = async () => {
     try {
@@ -36,7 +42,11 @@ const ChatInputComponent = ({
         <CameraComponent closeCam={() => setIsCamVisible(false)} />
       </Modal>
       <View style={styles.leftView}>
-        {isBoardVisible ? (
+       {
+         !recording ? (
+          <>
+             {
+                isBoardVisible ? (
           <TouchableOpacity
             onPress={() => {
               showEmoGifBoard(false);
@@ -74,9 +84,41 @@ const ChatInputComponent = ({
         <TouchableOpacity onPress={() => showMediaPicker()}>
           <FontAwesome name="paperclip" size={22} style={styles.clip} />
         </TouchableOpacity>
+          </>
+        ) : (
+          <View style={styles.recordingCont}>
+            { isPaused ? (
+               <TouchableOpacity onPress={() => recordAudio()}>
+               <MaterialIcons name="fiber-manual-record" size={32} color="rgb(200, 80, 80)" style={[styles.pauseicon, {top: -3}]} />
+             </TouchableOpacity>
+            ) : (
+                 <TouchableOpacity onPress={() => pauseRecording()}>
+                 <Ionicons name="pause" size={24} color="black"  style={styles.pauseicon}/>
+               </TouchableOpacity>
+            )}
+             
+              <Text style={styles.text}>{ isPaused? "Paused" : "Recording..." }</Text>
+              <View style={styles.recordingTime}>
+                { recordingTime.hours > 0 && <Text style={styles.text}>{recordingTime.hours + ':'}</Text> }
+                <Text style={styles.text}>{recordingTime.minutes + ':'}</Text>
+                <Text style={styles.text}>{recordingTime.seconds}</Text>
+                <Text></Text>
+              </View>
+              <TouchableOpacity onPress={() => stopRecording()}>
+              <Ionicons name="stop" sze={24} color="rgb(200, 80, 80)" style={styles.stopIcon}/>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => deleteRecording()}>
+              <MaterialIcons name="delete" size={24} color="rgb(200, 80, 80)" style={styles.delIcon}/> 
+              </TouchableOpacity>
+              
+              
+          </View>
+        )
+       }
       </View>
       <View style={styles.micContainer}>
-        {message ? (
+        {
+           recording || message ? (
           <TouchableOpacity onPress={() => sendMessage()}>
             <MaterialIcons name="send" size={24} style={styles.mic} />
           </TouchableOpacity>
@@ -144,4 +186,30 @@ const styles = StyleSheet.create({
   mic: {
     color: "#272727",
   },
+  recordingCont: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    
+  },
+  pauseicon: {
+    marginRight: 10,
+    marginLeft: 5,
+  },
+  recordingTime: {
+    flexDirection: 'row',
+    marginLeft: 'auto',
+    marginRight: 5,
+  },
+  text: {
+    color: '#4F4F4F',
+  },
+  delIcon: {
+    marginLeft: 5,
+    marginRight: 5,
+  },
+  stopIcon: {
+    marginRight: 5,
+    marginLeft: 5,
+  }
 });

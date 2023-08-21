@@ -14,7 +14,7 @@ export default function App(props) {
     const handleSubmit = async () => {
         try {
             await schema.validate({ email, password }, { abortEarly: false });
-            // Validation successful, continue with your logic here
+           
         } catch (error) {
             const validationErrors = error.inner.reduce((acc, err) => {
                 acc[err.path] = err.message;

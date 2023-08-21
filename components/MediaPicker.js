@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { FontAwesome, MaterialIcons } from "@expo/vector-icons";
 import * as ImagePicker from 'expo-image-picker';
+import *as DocumentPicker from 'expo-document-picker';
 
 const MediaPicker = ({isVisible}) => {
   const opoenImagePicker = async() => {
@@ -13,6 +14,17 @@ const MediaPicker = ({isVisible}) => {
         mediaTypes: ImagePicker.MediaTypeOptions.All
     }
     const result = await ImagePicker.launchImageLibraryAsync(options)
+  }
+  const openAudioPicker = async () => {
+    const options = {
+      type: 'audio/mpeg'
+    }
+    try {
+      const result = await DocumentPicker.getDocumentAsyncs(options);
+      console.log(result);
+    } catch (error) {
+      console.log(error);
+    }
   }
   return (
     <>
@@ -30,7 +42,7 @@ const MediaPicker = ({isVisible}) => {
             </TouchableOpacity>
           </View>
           <View style={styles.iconContainer}>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => openAudioPicker()}>
               <FontAwesome
                 name="microphone"
                 size={30}

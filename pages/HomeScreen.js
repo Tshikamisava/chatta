@@ -8,11 +8,11 @@ import {
   Modal,
   Pressable,
 } from "react-native";
-import HomeSearchComponent from "../components/HomeSearchComponent";
-import ChatInputComponent from "../components/ChatInputComponent";
+
+
 import ChatRequest from "../components/ChatRequest";
 import FAB from "../components/FAB";
-import ChatComponents from "../components/ChatComponents";
+
 
 const HomeScreen = ({navigation}) => {
   const [isModalVisible, setIsModalVissible] = useState(false);
